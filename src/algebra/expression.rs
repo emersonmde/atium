@@ -19,4 +19,3 @@ impl<T: Expression + 'static> AsAny for T {
         self
     }
 }
-

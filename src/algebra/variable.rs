@@ -8,7 +8,7 @@ pub struct Variable {
 }
 
 impl Variable {
-    pub fn new(value: &str) -> Self {
+    pub fn _new(value: &str) -> Self {
         Self {
             name: value.to_string(),
         }
@@ -28,4 +28,3 @@ impl Expression for Variable {
         self
     }
 }
-

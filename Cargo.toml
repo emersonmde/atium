@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 dyn-clone = "1.0.16"
+nom = "7.1.3"
