@@ -1,4 +1,4 @@
-[![Rust](https://github.com/emersonmde/atium/actions/workflows/rust.yml/badge.svg)](https://github.com/emersonmde/atium/actions/workflows/rust.yml)
+[![Build](https://github.com/emersonmde/atium/actions/workflows/rust.yml/badge.svg)](https://github.com/emersonmde/atium/actions/workflows/rust.yml)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 # Atium
