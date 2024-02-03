@@ -1,3 +1,4 @@
+use nom::combinator::map;
 use nom::multi::many0;
 use nom::sequence::preceded;
 use nom::{
@@ -9,8 +10,21 @@ use crate::algebra::add::Add;
 use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
 use crate::algebra::multiply::Multiply;
+use crate::algebra::variable::Variable;
 
-fn parse_num(input: &str) -> IResult<&str, Box<dyn Expression>> {
+fn parse_variable(input: &str) -> IResult<&str, Box<dyn Expression>> {
+    map(
+        delimited(
+            multispace0,
+            // TODO: use alpha1 instead?
+            alt((tag("x"), tag("y"), tag("z"))),
+            multispace0,
+        ),
+        |var_str: &str| Box::new(Variable::new(var_str)) as Box<dyn Expression>,
+    )(input)
+}
+
+fn parse_number(input: &str) -> IResult<&str, Box<dyn Expression>> {
     map_res(digit1, |digit_str: &str| {
         digit_str
             .parse::<f64>()
@@ -21,7 +35,11 @@ fn parse_num(input: &str) -> IResult<&str, Box<dyn Expression>> {
 fn parse_factor(input: &str) -> IResult<&str, Box<dyn Expression>> {
     delimited(
         multispace0,
-        alt((delimited(tag("("), parse_expression, tag(")")), parse_num)),
+        alt((
+            delimited(tag("("), parse_expression, tag(")")),
+            parse_variable,
+            parse_number,
+        )),
         multispace0,
     )(input)
 }
@@ -111,7 +129,6 @@ mod tests {
     fn parse_invalid_expression() {
         let input = "3+*4";
         let result = parse_expression(input);
-        println!("{:?}", result);
         assert!(result.is_err());
     }
 }

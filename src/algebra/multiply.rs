@@ -3,7 +3,6 @@ use std::any::Any;
 use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
 
-#[derive(Debug)]
 pub struct Multiply {
     pub ops: Vec<Box<dyn Expression>>,
 }
@@ -36,11 +35,13 @@ impl Expression for Multiply {
     }
 
     fn simplify(&self) -> Box<dyn Expression> {
-        println!("Starting ops {:?}\n", self.ops);
+        println!("Starting ops:\n");
+        self.debug(0);
 
         // flatten nested multiply expressions
         let flattened_ops = self.flatten();
-        println!("Flattened ops {:?}\n", flattened_ops);
+        println!("Flattened ops\n");
+        self.debug(0);
 
         // Handle 0
         if flattened_ops.iter().any(|op| {
@@ -66,7 +67,8 @@ impl Expression for Multiply {
             })
             .collect();
 
-        println!("Filtered and flattened ops {:?}\n", ops);
+        println!("Filtered and flattened ops:\n");
+        self.debug(0);
 
         // TODO: create identity trait and implement to combine like terms and calculate product of constants
         // Combine Like Terms
@@ -101,6 +103,14 @@ impl Expression for Multiply {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn debug(&self, indent: usize) {
+        println!("{}Multiply {{", " ".repeat(indent));
+        for op in &self.ops {
+            op.debug(indent + 2);
+        }
+        println!("{}}}", " ".repeat(indent));
     }
 }
 

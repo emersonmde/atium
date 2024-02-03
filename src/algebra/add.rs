@@ -1,10 +1,8 @@
 use std::any::Any;
-use std::fmt::Debug;
 
 use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
 
-#[derive(Debug)]
 pub struct Add {
     pub ops: Vec<Box<dyn Expression>>,
 }
@@ -35,7 +33,8 @@ impl Expression for Add {
     }
 
     fn simplify(&self) -> Box<dyn Expression> {
-        println!("Starting ops {:?}\n", self.ops);
+        println!("Starting ops:\n");
+        self.debug(0);
         // Flatten nested Add expressions
         let flattened_ops = self.flatten();
 
@@ -81,6 +80,14 @@ impl Expression for Add {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn debug(&self, indent: usize) {
+        println!("{}Add {{", " ".repeat(indent));
+        for op in &self.ops {
+            op.debug(indent + 2);
+        }
+        println!("{}}}", " ".repeat(indent));
     }
 }
 

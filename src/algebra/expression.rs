@@ -2,10 +2,12 @@ use std::any::Any;
 
 use dyn_clone::DynClone;
 
-pub trait Expression: DynClone + std::fmt::Debug {
+pub trait Expression: DynClone {
     fn eval(&self) -> Box<dyn Expression>;
     fn simplify(&self) -> Box<dyn Expression>;
     fn as_any(&self) -> &dyn Any;
+
+    fn debug(&self, indent: usize);
 }
 
 dyn_clone::clone_trait_object!(Expression);

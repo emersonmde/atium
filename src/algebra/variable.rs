@@ -8,7 +8,7 @@ pub struct Variable {
 }
 
 impl Variable {
-    pub fn _new(value: &str) -> Self {
+    pub fn new(value: &str) -> Self {
         Self {
             name: value.to_string(),
         }
@@ -26,5 +26,9 @@ impl Expression for Variable {
 
     fn as_any(&self) -> &dyn Any {
         self
+    }
+
+    fn debug(&self, indent: usize) {
+        println!("{}Variable {{ name: {} }}", " ".repeat(indent), self.name);
     }
 }

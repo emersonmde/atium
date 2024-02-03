@@ -25,4 +25,8 @@ impl Expression for Constant {
     fn as_any(&self) -> &dyn Any {
         self
     }
+
+    fn debug(&self, indent: usize) {
+        println!("{}Constant {{ value: {} }}", " ".repeat(indent), self.value);
+    }
 }
