@@ -45,10 +45,11 @@ fn main() -> std::io::Result<()> {
 
     // Trim whitespace from the PNG
     let trimmed_png_path = temp_dir_path.join("trimmed_output.png");
-    trim_whitespace(
+    crop_and_scale(
         output_png_path.to_str().unwrap(),
         trimmed_png_path.to_str().unwrap(),
         10,
+        2.0,
     )
     .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
 
@@ -67,7 +68,7 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-fn trim_whitespace(input_path: &str, output_path: &str, margin: u32) -> image::ImageResult<()> {
+fn crop_and_scale(input_path: &str, output_path: &str, margin: u32, scaling_factor: f32) -> image::ImageResult<()> {
     let img = image::open(input_path)?;
     let (width, height) = img.dimensions();
 
@@ -96,7 +97,12 @@ fn trim_whitespace(input_path: &str, output_path: &str, margin: u32) -> image::I
     // Ensure there is something to crop
     if top < bottom && left < right {
         let cropped = img.crop_imm(left, top, right - left + 1, bottom - top + 1);
-        cropped.save(output_path)?;
+        let scaled = cropped.resize(
+            (cropped.width() as f32 * scaling_factor) as u32,
+            (cropped.height() as f32 * scaling_factor) as u32,
+            image::imageops::FilterType::CatmullRom
+        );
+        scaled.save(output_path)?;
     } else {
         return Err(image::ImageError::Parameter(
             image::error::ParameterError::from_kind(
