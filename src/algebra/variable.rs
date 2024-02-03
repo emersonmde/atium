@@ -28,7 +28,7 @@ impl Expression for Variable {
         self
     }
 
-    fn debug(&self, indent: usize) {
-        println!("{}Variable {{ name: {} }}", " ".repeat(indent), self.name);
+    fn debug(&self, indent: usize) -> String {
+        format!("{}Variable {{ name: {} }}\n", " ".repeat(indent), self.name)
     }
 }

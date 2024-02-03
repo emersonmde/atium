@@ -35,13 +35,11 @@ impl Expression for Multiply {
     }
 
     fn simplify(&self) -> Box<dyn Expression> {
-        println!("Starting ops:\n");
-        self.debug(0);
+        println!("Starting ops: {:?}\n", self.ops);
 
         // flatten nested multiply expressions
         let flattened_ops = self.flatten();
-        println!("Flattened ops\n");
-        self.debug(0);
+        println!("Flattened ops {:?}\n", flattened_ops);
 
         // Handle 0
         if flattened_ops.iter().any(|op| {
@@ -67,8 +65,7 @@ impl Expression for Multiply {
             })
             .collect();
 
-        println!("Filtered and flattened ops:\n");
-        self.debug(0);
+        println!("Filtered and flattened ops: {:?}\n", ops);
 
         // TODO: create identity trait and implement to combine like terms and calculate product of constants
         // Combine Like Terms
@@ -98,19 +95,20 @@ impl Expression for Multiply {
         // Simplify and Reduce Expression
         // Return Simplified Expression
 
-        Box::new(self.clone())
+        Box::new(Self { ops })
     }
 
     fn as_any(&self) -> &dyn Any {
         self
     }
 
-    fn debug(&self, indent: usize) {
-        println!("{}Multiply {{", " ".repeat(indent));
+    fn debug(&self, indent: usize) -> String {
+        let mut output = format!("{}Multiply {{\n", " ".repeat(indent));
         for op in &self.ops {
-            op.debug(indent + 2);
+            output.push_str(&op.debug(indent + 2));
         }
-        println!("{}}}", " ".repeat(indent));
+        output.push_str(&format!("{}}}\n", " ".repeat(indent)));
+        output
     }
 }
 

@@ -33,8 +33,7 @@ impl Expression for Add {
     }
 
     fn simplify(&self) -> Box<dyn Expression> {
-        println!("Starting ops:\n");
-        self.debug(0);
+        println!("Starting ops: {:?}\n", self.ops);
         // Flatten nested Add expressions
         let flattened_ops = self.flatten();
 
@@ -50,6 +49,7 @@ impl Expression for Add {
                 }
             })
             .collect();
+        println!("Filtered and flattened ops: {:?}\n", ops);
 
         // Sum all constants
         // TODO: handle mixed expression (some constants, some variables)
@@ -75,19 +75,20 @@ impl Expression for Add {
         // Check for simplification to a single term
         // Construct and return the simplified Add expression
 
-        Box::new(self.clone())
+        Box::new(Self { ops })
     }
 
     fn as_any(&self) -> &dyn Any {
         self
     }
 
-    fn debug(&self, indent: usize) {
-        println!("{}Add {{", " ".repeat(indent));
+    fn debug(&self, indent: usize) -> String {
+        let mut output = format!("{}Add {{\n", " ".repeat(indent));
         for op in &self.ops {
-            op.debug(indent + 2);
+            output.push_str(&op.debug(indent + 2));
         }
-        println!("{}}}", " ".repeat(indent));
+        output.push_str(&format!("{}}}\n", " ".repeat(indent)));
+        output
     }
 }
 

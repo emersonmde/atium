@@ -26,7 +26,11 @@ impl Expression for Constant {
         self
     }
 
-    fn debug(&self, indent: usize) {
-        println!("{}Constant {{ value: {} }}", " ".repeat(indent), self.value);
+    fn debug(&self, indent: usize) -> String {
+        format!(
+            "{}Constant {{ value: {} }}\n",
+            " ".repeat(indent),
+            self.value
+        )
     }
 }
