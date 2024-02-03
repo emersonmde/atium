@@ -68,7 +68,12 @@ fn main() -> std::io::Result<()> {
     Ok(())
 }
 
-fn crop_and_scale(input_path: &str, output_path: &str, margin: u32, scaling_factor: f32) -> image::ImageResult<()> {
+fn crop_and_scale(
+    input_path: &str,
+    output_path: &str,
+    margin: u32,
+    scaling_factor: f32,
+) -> image::ImageResult<()> {
     let img = image::open(input_path)?;
     let (width, height) = img.dimensions();
 
@@ -100,7 +105,7 @@ fn crop_and_scale(input_path: &str, output_path: &str, margin: u32, scaling_fact
         let scaled = cropped.resize(
             (cropped.width() as f32 * scaling_factor) as u32,
             (cropped.height() as f32 * scaling_factor) as u32,
-            image::imageops::FilterType::CatmullRom
+            image::imageops::FilterType::CatmullRom,
         );
         scaled.save(output_path)?;
     } else {

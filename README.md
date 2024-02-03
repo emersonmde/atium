@@ -1,3 +1,6 @@
+[![Build](https://github.com/emersonmde/atium/actions/workflows/rust.yml/badge.svg)](https://github.com/emersonmde/atium/actions/workflows/rust.yml)
+[![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 # Atium - A Computer Algebra System (CAS)
 
 Atium is a Computer Algebra System (CAS) written in Rust, designed to parse, simplify, and visually represent algebraic expressions. It leverages Typst for typesetting and iTerm2's advanced capabilities for inline image display.
@@ -71,4 +74,8 @@ With the prerequisites in place, here's how you can get started with Atium:
 
 Atium is actively being developed. While it's not yet feature-complete, the foundations for expression parsing and simplification are in place, and visual output via Typist is supported.
 
-Feel free to explore the project and test its current capabilities. Check back regularly for updates and additional features!
+Feel free to explore the project and test its current capabilities
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
