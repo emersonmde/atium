@@ -97,7 +97,9 @@ impl Expression for Add {
         for op in &self.ops {
             let part = op.to_typist();
             // Nested expressions might need parentheses, but simple constants or variables do not.
-            if op.as_any().downcast_ref::<Multiply>().is_some() || op.as_any().downcast_ref::<Add>().is_some() {
+            if op.as_any().downcast_ref::<Multiply>().is_some()
+                || op.as_any().downcast_ref::<Add>().is_some()
+            {
                 parts.push(format!("({})", part));
             } else {
                 parts.push(part);

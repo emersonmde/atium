@@ -5,6 +5,20 @@
 
 This project is a Computer Algebra System (CAS) developed in Rust
 
+## Pre-requisites
+
+### MacOS
+Install Typst
+```bash
+brew install typst
+
+```
+
+Install iTerm2 Shell Integration
+```bash
+curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
+```
+
 ## Getting Started
 
 ```bash

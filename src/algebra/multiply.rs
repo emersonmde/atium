@@ -1,5 +1,5 @@
-use std::any::Any;
 use crate::algebra::add::Add;
+use std::any::Any;
 
 use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
@@ -117,7 +117,9 @@ impl Expression for Multiply {
         for op in &self.ops {
             // Use parentheses for nested expressions for clarity
             let part = op.to_typist();
-            if op.as_any().downcast_ref::<Multiply>().is_some() || op.as_any().downcast_ref::<Add>().is_some() {
+            if op.as_any().downcast_ref::<Multiply>().is_some()
+                || op.as_any().downcast_ref::<Add>().is_some()
+            {
                 parts.push(format!("({})", part));
             } else {
                 parts.push(part);
