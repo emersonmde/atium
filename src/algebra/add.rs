@@ -34,7 +34,6 @@ impl Expression for Add {
     }
 
     fn simplify(&self) -> Box<dyn Expression> {
-        println!("Starting ops: {:?}\n", self.ops);
         // Flatten nested Add expressions
         let flattened_ops = self.flatten();
 
@@ -50,7 +49,6 @@ impl Expression for Add {
                 }
             })
             .collect();
-        println!("Filtered and flattened ops: {:?}\n", ops);
 
         // Sum all constants
         // TODO: handle mixed expression (some constants, some variables)
@@ -64,7 +62,7 @@ impl Expression for Add {
                     sum += op.value;
                 }
             }
-            println!("Final sum: {}\n", sum);
+
             return Box::new(Constant::new(sum));
         }
 

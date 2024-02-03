@@ -36,11 +36,8 @@ impl Expression for Multiply {
     }
 
     fn simplify(&self) -> Box<dyn Expression> {
-        println!("Starting ops: {:?}\n", self.ops);
-
         // flatten nested multiply expressions
         let flattened_ops = self.flatten();
-        println!("Flattened ops {:?}\n", flattened_ops);
 
         // Handle 0
         if flattened_ops.iter().any(|op| {
@@ -66,8 +63,6 @@ impl Expression for Multiply {
             })
             .collect();
 
-        println!("Filtered and flattened ops: {:?}\n", ops);
-
         // TODO: create identity trait and implement to combine like terms and calculate product of constants
         // Combine Like Terms
         // Evaluate Constant Multiplication
@@ -81,7 +76,6 @@ impl Expression for Multiply {
                     product *= op.value;
                 }
             }
-            println!("Final product: {}\n", product);
             return Box::new(Constant::new(product));
         }
 
@@ -125,7 +119,7 @@ impl Expression for Multiply {
                 parts.push(part);
             }
         }
-        parts.join(" * ") // Join with multiplication symbol; adjust based on Typist conventions if necessary
+        parts.join(" ") // Join with multiplication symbol; adjust based on Typist conventions if necessary
     }
 }
 
