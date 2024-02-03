@@ -9,5 +9,8 @@ fn main() {
     println!("Starting expression: {:?}", parsed);
 
     let simplified_expression = parsed.simplify();
-    println!("Simplified expression: {:?}", simplified_expression);
+    println!("Simplified expression: {:?}\n\n", simplified_expression);
+
+
+    println!("Typist expression: {}", simplified_expression.to_typist());
 }

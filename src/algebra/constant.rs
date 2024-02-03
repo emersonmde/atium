@@ -33,4 +33,8 @@ impl Expression for Constant {
             self.value
         )
     }
+
+    fn to_typist(&self) -> String {
+        self.value.to_string()
+    }
 }

@@ -31,4 +31,8 @@ impl Expression for Variable {
     fn debug(&self, indent: usize) -> String {
         format!("{}Variable {{ name: {} }}\n", " ".repeat(indent), self.name)
     }
+
+    fn to_typist(&self) -> String {
+        self.name.clone() // Directly return the variable name
+    }
 }

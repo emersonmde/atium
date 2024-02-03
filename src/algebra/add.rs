@@ -2,6 +2,7 @@ use std::any::Any;
 
 use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
+use crate::algebra::multiply::Multiply;
 
 pub struct Add {
     pub ops: Vec<Box<dyn Expression>>,
@@ -89,6 +90,20 @@ impl Expression for Add {
         }
         output.push_str(&format!("{}}}\n", " ".repeat(indent)));
         output
+    }
+
+    fn to_typist(&self) -> String {
+        let mut parts: Vec<String> = Vec::new();
+        for op in &self.ops {
+            let part = op.to_typist();
+            // Nested expressions might need parentheses, but simple constants or variables do not.
+            if op.as_any().downcast_ref::<Multiply>().is_some() || op.as_any().downcast_ref::<Add>().is_some() {
+                parts.push(format!("({})", part));
+            } else {
+                parts.push(part);
+            }
+        }
+        parts.join(" + ")
     }
 }
 

@@ -1,4 +1,5 @@
 use std::any::Any;
+use crate::algebra::add::Add;
 
 use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
@@ -109,6 +110,20 @@ impl Expression for Multiply {
         }
         output.push_str(&format!("{}}}\n", " ".repeat(indent)));
         output
+    }
+
+    fn to_typist(&self) -> String {
+        let mut parts: Vec<String> = Vec::new();
+        for op in &self.ops {
+            // Use parentheses for nested expressions for clarity
+            let part = op.to_typist();
+            if op.as_any().downcast_ref::<Multiply>().is_some() || op.as_any().downcast_ref::<Add>().is_some() {
+                parts.push(format!("({})", part));
+            } else {
+                parts.push(part);
+            }
+        }
+        parts.join(" * ") // Join with multiplication symbol; adjust based on Typist conventions if necessary
     }
 }
 

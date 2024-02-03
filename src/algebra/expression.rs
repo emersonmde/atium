@@ -9,6 +9,7 @@ pub trait Expression: DynClone {
     fn as_any(&self) -> &dyn Any;
 
     fn debug(&self, indent: usize) -> String;
+    fn to_typist(&self) -> String;
 }
 
 dyn_clone::clone_trait_object!(Expression);
