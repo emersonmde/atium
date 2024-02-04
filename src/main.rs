@@ -29,6 +29,23 @@ fn main() -> Result<()> {
     Ok(())
 }
 
+/// This function takes a simplified expression and a path to the `imgcat` executable,
+/// and prints the expression as an image.
+///
+/// # Arguments
+///
+/// * `simplified_expr` - A boxed expression that has been simplified.
+/// * `imgcat_path` - A `PathBuf` that specifies the location of the `imgcat` executable.
+///
+/// # Errors
+///
+/// This function will return an error if:
+///
+/// * There is a problem creating the temporary directory.
+/// * There is a problem writing the Typist file.
+/// * The `typst` command fails.
+/// * There is a problem cropping and scaling the image.
+/// * The `imgcat` command fails.
 fn print_expr_as_img(simplified_expr: Box<dyn Expression>, imgcat_path: PathBuf) -> Result<()> {
     let temp_dir = tempdir()?;
     let temp_dir_path = temp_dir.path();
@@ -74,6 +91,22 @@ fn print_expr_as_img(simplified_expr: Box<dyn Expression>, imgcat_path: PathBuf)
     Ok(())
 }
 
+/// This function takes an input image path and an output image path,
+/// and crops and scales the image.
+///
+/// # Arguments
+///
+/// * `input_path` - A string that specifies the location of the input image.
+/// * `output_path` - A string that specifies the location of the output image.
+/// * `margin` - A `u32` that specifies the margin to add around the image.
+/// * `scaling_factor` - A `f32` that specifies the scaling factor for the image.
+///
+/// # Errors
+///
+/// This function will return an error if:
+///
+/// * There is a problem opening the input image.
+/// * There is a problem saving the output image.
 fn crop_and_scale(
     input_path: &str,
     output_path: &str,
@@ -121,6 +154,12 @@ fn crop_and_scale(
     Ok(())
 }
 
+/// This function finds the `imgcat` executable in the system.
+///
+/// # Returns
+///
+/// * `Some(PathBuf)` - A `PathBuf` that specifies the location of the `imgcat` executable.
+/// * `None` - If the `imgcat` executable could not be found.
 fn find_imgcat() -> Option<PathBuf> {
     // Check ~/.iterm2/imgcat
     let home_dir = env::var("HOME").ok()?;

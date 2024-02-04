@@ -4,6 +4,8 @@ use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
 use crate::algebra::multiply::Multiply;
 
+/// `Add` struct represents an addition operation in an expression tree.
+/// It contains a vector of `Expression` trait objects.
 pub struct Add {
     pub ops: Vec<Box<dyn Expression>>,
 }
@@ -13,8 +15,10 @@ impl Add {
         Self { ops }
     }
 
-    // TODO: Add flatten to Expression trait
+    /// Flattens nested `Add` expressions into a single-level `Add` expression.
+    /// This is a helper method used in the `simplify` method.
     fn flatten(&self) -> Vec<Box<dyn Expression>> {
+        // TODO: Add flatten to Expression trait
         let mut flattened_ops = Vec::new();
         for op in &self.ops {
             if let Some(mul) = op.as_any().downcast_ref::<Add>() {
@@ -29,10 +33,14 @@ impl Add {
 }
 
 impl Expression for Add {
+    /// Evaluates the expression and returns a new expression.
     fn eval(&self) -> Box<dyn Expression> {
         todo!()
     }
 
+    /// Simplifies the expression and returns a new simplified expression.
+    /// This method implements several algebraic simplification rules, such as eliminating addition by 0,
+    /// evaluating constant addition, and others.
     fn simplify(&self) -> Box<dyn Expression> {
         // Flatten nested Add expressions
         let flattened_ops = self.flatten();
@@ -77,10 +85,12 @@ impl Expression for Add {
         Box::new(Self { ops })
     }
 
+    /// Returns a reference to the expression as a `dyn Any`, which can be downcast to its concrete type.
     fn as_any(&self) -> &dyn Any {
         self
     }
 
+    /// Returns a debug string for the expression. The `indent` parameter specifies the indentation level.
     fn debug(&self, indent: usize) -> String {
         let mut output = format!("{}Add {{\n", " ".repeat(indent));
         for op in &self.ops {
@@ -90,6 +100,7 @@ impl Expression for Add {
         output
     }
 
+    /// Returns a Typist string for the expression.
     fn to_typist(&self) -> String {
         let mut parts: Vec<String> = Vec::new();
         for op in &self.ops {

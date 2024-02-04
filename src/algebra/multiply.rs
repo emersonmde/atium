@@ -4,15 +4,20 @@ use std::any::Any;
 use crate::algebra::constant::Constant;
 use crate::algebra::expression::Expression;
 
+/// `Multiply` struct represents a multiplication operation in an expression tree.
+/// It contains a vector of `Expression` trait objects, which can be any type that implements the `Expression` trait.
 pub struct Multiply {
     pub ops: Vec<Box<dyn Expression>>,
 }
 
 impl Multiply {
+    /// Constructs a new `Multiply` instance.
     pub fn new(ops: Vec<Box<dyn Expression>>) -> Self {
         Self { ops }
     }
 
+    /// Flattens nested `Multiply` expressions into a single-level `Multiply` expression.
+    /// This is a helper method used in the `simplify` method.
     fn flatten(&self) -> Vec<Box<dyn Expression>> {
         let mut flattened_ops = Vec::new();
         for op in &self.ops {
@@ -35,6 +40,9 @@ impl Expression for Multiply {
         todo!("Implement eval for Multiply")
     }
 
+    /// Simplifies the expression and returns a new simplified expression.
+    /// This method implements several algebraic simplification rules, such as eliminating multiplication by 1,
+    /// evaluating constant multiplication, and others.
     fn simplify(&self) -> Box<dyn Expression> {
         // flatten nested multiply expressions
         let flattened_ops = self.flatten();
@@ -93,10 +101,12 @@ impl Expression for Multiply {
         Box::new(Self { ops })
     }
 
+    /// Returns a reference to the expression as a `dyn Any`, which can be downcast to its concrete type.
     fn as_any(&self) -> &dyn Any {
         self
     }
 
+    /// Returns a debug string for the expression. The `indent` parameter specifies the indentation level.
     fn debug(&self, indent: usize) -> String {
         let mut output = format!("{}Multiply {{\n", " ".repeat(indent));
         for op in &self.ops {
@@ -106,6 +116,7 @@ impl Expression for Multiply {
         output
     }
 
+    /// Returns a Typist string for the expression.
     fn to_typist(&self) -> String {
         let mut parts: Vec<String> = Vec::new();
         for op in &self.ops {
