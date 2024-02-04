@@ -20,15 +20,11 @@ fn main() -> Result<()> {
 
     let simplified_expr = expr.simplify();
 
+    println!("Simplified Expression: {:?}\n", simplified_expr.to_typist());
     let imgcat_path = find_imgcat();
-    // imgcat not found, just print expr
-    if imgcat_path.is_none() {
-        simplified_expr.debug(0);
-        std::process::exit(0);
+    if let Some(imgcat_path) = imgcat_path {
+        print_expr_as_img(simplified_expr, imgcat_path).unwrap();
     }
-    let imgcat_path = imgcat_path.unwrap();
-
-    print_expr_as_img(simplified_expr, imgcat_path).unwrap();
 
     Ok(())
 }
@@ -68,7 +64,6 @@ fn print_expr_as_img(simplified_expr: Box<dyn Expression>, imgcat_path: PathBuf)
     )?;
 
     // Output using imgcat
-    println!("\n");
     let status = Command::new(imgcat_path)
         .arg(trimmed_png_path.to_str().unwrap())
         .status()?;
