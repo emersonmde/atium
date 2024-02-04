@@ -165,4 +165,14 @@ mod tests {
             panic!("Expected Constant");
         }
     }
+
+    #[test]
+    fn add_simplify_with_negative_constant() {
+        let add = Add::new(vec![
+            Box::new(Constant::new(5.0)),
+            Box::new(Constant::new(-3.0)),
+        ]);
+        let simplified = add.simplify();
+        assert_eq!(simplified.to_typist(), "2");
+    }
 }

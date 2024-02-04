@@ -56,10 +56,24 @@ fn parse_term(input: &str) -> IResult<&str, Box<dyn Expression>> {
 
 pub fn parse_expression(input: &str) -> IResult<&str, Box<dyn Expression>> {
     let (input, init) = parse_term(input)?;
-    let (input, ops) = many0(preceded(tag("+"), parse_term))(input)?;
+    let (input, ops) = many0(alt((
+        preceded(tag("+"), parse_term),
+        // Handle subtraction by negating the term following the '-'
+        map(
+            preceded(tag("-"), parse_term),
+            |term: Box<dyn Expression>| {
+                Box::new(Add::new(vec![
+                    Box::new(Constant::new(0.0)),
+                    Box::new(Multiply::new(vec![Box::new(Constant::new(-1.0)), term])),
+                ])) as Box<dyn Expression>
+            },
+        ),
+    )))(input)?;
+
     let result = ops
         .into_iter()
         .fold(init, |acc, val| Box::new(Add::new(vec![acc, val])));
+
     if input.is_empty() {
         Ok((input, result))
     } else {
