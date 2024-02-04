@@ -17,7 +17,6 @@ jobs:
       - uses: dtolnay/rust-toolchain@v1
         with:
           toolchain: stable
-          profile: minimal
       - uses: Swatinem/rust-cache@v2
       - name: Run tests
         run: cargo test --verbose
@@ -61,7 +60,7 @@ jobs:
       - name: Generate Documentation
         run: cargo doc --no-deps
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4.3.1
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
           branch: gh-pages  # The branch the action should deploy to.
           folder: target/doc  # The folder the action should deploy.
