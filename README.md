@@ -1,4 +1,4 @@
-[![Build](https://github.com/emersonmde/atium/actions/workflows/rust.yml/badge.svg)](https://github.com/emersonmde/atium/actions/workflows/rust.yml)
+[![Rust Build](https://github.com/emersonmde/atium/actions/workflows/rust_build.yml/badge.svg)](https://github.com/emersonmde/atium/actions/workflows/rust_build.yml)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 # Atium - A Computer Algebra System (CAS)
@@ -69,6 +69,10 @@ With the prerequisites in place, here's how you can get started with Atium:
    ```
 
    The console will display the original and simplified expressions, and iTerm2 users will see the visual representation.
+
+## Documentation
+
+For more detailed information about how to use Atium and its API, check out the [documentation](https://emersonmde.github.io/atium/atium/index.html).
 
 ## Development Status
 
