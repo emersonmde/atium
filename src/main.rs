@@ -1,13 +1,15 @@
+use anyhow::{anyhow, Result};
 use std::env;
 use std::path::PathBuf;
 use std::process::Command;
 
+use crate::algebra::expression::Expression;
 use image::GenericImageView;
 use tempfile::tempdir;
 
 mod algebra;
 
-fn main() -> std::io::Result<()> {
+fn main() -> Result<()> {
     let args: Vec<String> = env::args().collect();
     if args.len() != 2 {
         eprintln!("Usage: {} '<expression>'", args[0]);
@@ -15,15 +17,28 @@ fn main() -> std::io::Result<()> {
     }
 
     let (_, expr) = algebra::parser::parse_expression(&args[1]).unwrap();
-    println!("Starting expression: {:?}", expr);
 
-    let mut typist_expression = expr.simplify().to_typist();
-    println!("Simplified expression: {}", typist_expression);
+    let simplified_expr = expr.simplify();
 
+    let imgcat_path = find_imgcat();
+    // imgcat not found, just print expr
+    if imgcat_path.is_none() {
+        simplified_expr.debug(0);
+        std::process::exit(0);
+    }
+    let imgcat_path = imgcat_path.unwrap();
+
+    print_expr_as_img(simplified_expr, imgcat_path).unwrap();
+
+    Ok(())
+}
+
+fn print_expr_as_img(simplified_expr: Box<dyn Expression>, imgcat_path: PathBuf) -> Result<()> {
     let temp_dir = tempdir()?;
     let temp_dir_path = temp_dir.path();
 
     let typist_file_path = temp_dir_path.join("expression.typ");
+    let mut typist_expression = simplified_expr.to_typist();
     typist_expression.push_str("\n\n");
     std::fs::write(&typist_file_path, typist_expression)?;
 
@@ -37,9 +52,9 @@ fn main() -> std::io::Result<()> {
         ])
         .output()?;
     if !output.status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            format!("typst failed: {}", String::from_utf8_lossy(&output.stderr)),
+        return Err(anyhow!(
+            "typst failed: {}",
+            String::from_utf8_lossy(&output.stderr)
         ));
     }
 
@@ -50,19 +65,15 @@ fn main() -> std::io::Result<()> {
         trimmed_png_path.to_str().unwrap(),
         10,
         2.0,
-    )
-    .map_err(|e| std::io::Error::new(std::io::ErrorKind::Other, e.to_string()))?;
+    )?;
 
-    // Output using `imgcat`
-    let imgcat_path = find_imgcat().expect("imgcat not found, install iTerm2 shell integrations: https://iterm2.com/documentation-images.html");
+    // Output using imgcat
+    println!("\n");
     let status = Command::new(imgcat_path)
         .arg(trimmed_png_path.to_str().unwrap())
         .status()?;
     if !status.success() {
-        return Err(std::io::Error::new(
-            std::io::ErrorKind::Other,
-            "imgcat failed",
-        ));
+        return Err(anyhow!("imgcat failed"));
     }
 
     Ok(())
@@ -73,7 +84,7 @@ fn crop_and_scale(
     output_path: &str,
     margin: u32,
     scaling_factor: f32,
-) -> image::ImageResult<()> {
+) -> Result<()> {
     let img = image::open(input_path)?;
     let (width, height) = img.dimensions();
 
@@ -109,11 +120,7 @@ fn crop_and_scale(
         );
         scaled.save(output_path)?;
     } else {
-        return Err(image::ImageError::Parameter(
-            image::error::ParameterError::from_kind(
-                image::error::ParameterErrorKind::DimensionMismatch,
-            ),
-        ));
+        return Err(anyhow!("No content found in the image"));
     }
 
     Ok(())
