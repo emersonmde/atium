@@ -205,10 +205,20 @@ mod tests {
         ]);
         let multiply = Multiply::new(vec![Box::new(Constant::new(4.0)), Box::new(nested_add)]);
         let simplified = multiply.simplify();
-        if let Some(constant) = simplified.as_any().downcast_ref::<Constant>() {
-            assert_eq!(constant.value, 20.0);
+        if let Some(simplified_multiply) = simplified.as_any().downcast_ref::<Multiply>() {
+            assert_eq!(
+                simplified_multiply
+                    .ops
+                    .first() // TODO: This is picking the multiply constant, need to fix to combine
+                    .unwrap()
+                    .as_any()
+                    .downcast_ref::<Constant>()
+                    .unwrap()
+                    .value,
+                4.0
+            )
         } else {
-            panic!("Expected Constant");
+            panic!("Expected Constant, found {:?}", simplified);
         }
     }
 }

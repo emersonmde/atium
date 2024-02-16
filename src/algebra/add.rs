@@ -59,20 +59,15 @@ impl Expression for Add {
             .collect();
 
         // Sum all constants
-        // TODO: handle mixed expression (some constants, some variables)
-        if ops
+        let (constants, mut ops): (Vec<_>, Vec<_>) = ops
+            .into_iter()
+            .partition(|op| op.as_any().downcast_ref::<Constant>().is_some());
+        let sum: f64 = constants
             .iter()
-            .all(|op| op.as_any().downcast_ref::<Constant>().is_some())
-        {
-            let mut sum = 0.0;
-            for op in ops.iter() {
-                if let Some(op) = op.as_any().downcast_ref::<Constant>() {
-                    sum += op.value;
-                }
-            }
+            .map(|op| op.as_any().downcast_ref::<Constant>().unwrap().value)
+            .sum();
 
-            return Box::new(Constant::new(sum));
-        }
+        ops.push(Box::<Constant>::new(Constant::new(sum)));
 
         // Group like terms
         // Combine constants
@@ -140,10 +135,20 @@ mod tests {
             Box::new(Constant::new(2.0)),
         ]);
         let simplified = add.simplify();
-        if let Some(constant) = simplified.as_any().downcast_ref::<Constant>() {
-            assert_eq!(constant.value, 3.0);
+        if let Some(simplified_add) = simplified.as_any().downcast_ref::<Add>() {
+            assert_eq!(
+                simplified_add
+                    .ops
+                    .first()
+                    .unwrap()
+                    .as_any()
+                    .downcast_ref::<Constant>()
+                    .unwrap()
+                    .value,
+                3.0
+            );
         } else {
-            panic!("Expected Constant");
+            panic!("Expected Constant, found {:?}", simplified);
         }
     }
 
@@ -155,10 +160,20 @@ mod tests {
             Box::new(Constant::new(3.0)),
         ]);
         let simplified = add.simplify();
-        if let Some(constant) = simplified.as_any().downcast_ref::<Constant>() {
-            assert_eq!(constant.value, 6.0);
+        if let Some(simplified_add) = simplified.as_any().downcast_ref::<Add>() {
+            assert_eq!(
+                simplified_add
+                    .ops
+                    .first()
+                    .unwrap()
+                    .as_any()
+                    .downcast_ref::<Constant>()
+                    .unwrap()
+                    .value,
+                6.0
+            )
         } else {
-            panic!("Expected Constant");
+            panic!("Expected Constant, found {:?}", simplified);
         }
     }
 
@@ -170,10 +185,20 @@ mod tests {
         ]);
         let add = Add::new(vec![Box::new(Constant::new(3.0)), Box::new(nested_add)]);
         let simplified = add.simplify();
-        if let Some(constant) = simplified.as_any().downcast_ref::<Constant>() {
-            assert_eq!(constant.value, 6.0);
+        if let Some(simplified_add) = simplified.as_any().downcast_ref::<Add>() {
+            assert_eq!(
+                simplified_add
+                    .ops
+                    .first()
+                    .unwrap()
+                    .as_any()
+                    .downcast_ref::<Constant>()
+                    .unwrap()
+                    .value,
+                6.0
+            )
         } else {
-            panic!("Expected Constant");
+            panic!("Expected Constant, found {:?}", simplified);
         }
     }
 
